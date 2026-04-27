@@ -163,7 +163,7 @@ export default function App() {
         
         // Agarramos estrictamente los primeros 4 resultados
         if (datos.results) {
-          setResultados(datos.results.slice(0, 4));
+          setResultados(datos.results.slice(0, 8));
         } else {
           setResultados([]); // Si no encuentra nada
         }
@@ -198,54 +198,67 @@ export default function App() {
       );
     }
 
-    // PANTALLA B: BUSCADOR Y LISTA DE 4 TARJETAS
+    // PANTALLA B: BUSCADOR Y LISTA DE 4 TARJETAS (CORREGIDO PARA 4 EN FILA)
     return (
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <h2>Buscador de Personajes (API)</h2>
+      // Aumentamos el maxWidth a 1100px para que las 4 tarjetas tengan espacio de lado a lado
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px' }}>
+        <h2 style={{ textAlign: 'center' }}>Buscador de Personajes (API)</h2>
         
         {/* Barra de búsqueda */}
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '30px', justifyContent: 'center' }}>
           <input 
             type="text" 
             placeholder="Escribe un nombre (Ej: Rick)..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            style={{ flex: 1, padding: '10px', fontSize: '16px', borderRadius: '5px' }}
+            style={{ width: '300px', padding: '10px', fontSize: '16px', borderRadius: '5px' }}
           />
-          <button onClick={buscarDatos} style={{ padding: '10px 20px' }}>
+          <button onClick={buscarDatos} style={{ padding: '10px 20px', cursor: 'pointer' }}>
             Buscar
           </button>
         </div>
 
-        {cargando && <p>Buscando datos...</p>}
+        {cargando && <p style={{ textAlign: 'center' }}>Buscando datos...</p>}
 
-        {/* Contenedor Responsivo de las 4 Tarjetas */}
+        {/* CUADRÍCULA FORZADA A 4 COLUMNAS */}
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', // Se adapta a celular o PC
+          // Forzamos 4 columnas de igual tamaño (1fr)
+          gridTemplateColumns: 'repeat(4, 1fr)', 
           gap: '15px' 
         }}>
           {resultados.map((personaje) => (
             <div key={personaje.id} style={{ 
-              border: '1px solid #ddd', borderRadius: '8px', padding: '10px', 
-              display: 'flex', gap: '15px', backgroundColor: '#fff', alignItems: 'flex-start'
+              border: '1px solid #ddd', 
+              borderRadius: '8px', 
+              padding: '15px', 
+              backgroundColor: '#fff',
+              display: 'flex',
+              flexDirection: 'column', // Imagen arriba, texto abajo para ganar espacio lateral
+              alignItems: 'center',
+              textAlign: 'center'
             }}>
-              {/* Imagen pequeña a la izquierda */}
+              {/* Imagen arriba y más grande */}
               <img 
                 src={personaje.image} 
                 alt={personaje.name} 
-                style={{ width: '90px', height: '90px', borderRadius: '5px', objectFit: 'cover' }} 
+                style={{ width: '100%', height: 'auto', borderRadius: '5px', marginBottom: '10px' }} 
               />
               
-              {/* Información y botón a la derecha */}
-              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100%' }}>
-                <h3 style={{ margin: '0 0 5px 0', fontSize: '16px' }}>{personaje.name}</h3>
+              {/* Información abajo */}
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, width: '100%' }}>
+                <h3 style={{ margin: '0 0 5px 0', fontSize: '15px' }}>{personaje.name}</h3>
                 <p style={{ margin: '0 0 10px 0', fontSize: '13px', color: '#555' }}>{personaje.species}</p>
                 
-                {/* marginTop: 'auto' obliga al botón a pegarse abajo */}
                 <button 
                   onClick={() => setItemSeleccionado(personaje)}
-                  style={{ marginTop: 'auto', padding: '5px', fontSize: '12px' }}
+                  style={{ 
+                    marginTop: 'auto', // Empuja el botón al fondo de la tarjeta
+                    padding: '8px', 
+                    fontSize: '12px', 
+                    cursor: 'pointer',
+                    width: '100%'
+                  }}
                 >
                   Ver Información
                 </button>
@@ -254,11 +267,12 @@ export default function App() {
           ))}
         </div>
 
-        <br /><hr />
-        {/* Usamos directamente la variable central porque TODO está en el mismo archivo */}
-        <button onClick={() => setVistaActual('menu')} style={{ marginTop: '10px' }}>
-          ⬅ Volver al Menú Principal
-        </button>
+        <br /><br /><hr />
+        <div style={{ textAlign: 'center' }}>
+          <button onClick={() => setVistaActual('menu')} style={{ marginTop: '10px', padding: '10px 20px' }}>
+            ⬅ Volver al Menú Principal
+          </button>
+        </div>
       </div>
     );
   };
